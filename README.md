@@ -10,9 +10,9 @@
       - python client/sklearn_titanic_client.py <profile-name> <deployment-name> client/test_file/test.csv
  ## Tensorflow:
     model:
-      - d3x models import tensorflow-model tensorflow tf/model/
+      - d3x models import tensorflow-model tensorflow tensorflow/model/
     Deploy:
-      -  Go to tf folder
+      -  Go to tensorflow folder
       - d3x serve create -n <deployment-name> -r mlflow --model <model-name> --model_version 1 --depfilepath tensorflow_mnist_serve.deploy
     Prediction:
       - python client/tensorflow_mnist_client.py <profile-name> <deployment-name> client/images/3.png
@@ -34,9 +34,9 @@
       - python client/tensorflow_mnist_client.py <profile-name> <deployment-name> client/images/3.png
   ## Custom-model:
     model:
-      d3x models import custom-model custom_model tf/model/
+      d3x models import custom-model custom_model custom_model/model/
     Deploy:
-      -Go to custom directory
+      -Go to custom_model directory
       - d3x serve create -n <deployment-name> -r mlflow --model <model-name> --model_version 1 --depfilepath custom_mnist_serve.deploy
     Prediction:
       - python client/tensorflow_mnist_client.py <profile-name> <deployment-name> client/images/3.png
