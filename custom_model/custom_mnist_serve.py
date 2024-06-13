@@ -18,7 +18,7 @@ img_h = 28
 @serve.deployment
 class ImageModel:
     def __init__(self):
-        self.model = tf.keras.models.load_model(os.environ["MODEL_PATH"]+'/artifacts/'+model_name)
+        self.model = tf.keras.models.load_model(os.environ["MODEL_PATH"]+'/artifacts/'+model_name+'/model.keras')
         self.logger = logging.getLogger("ray.serve")
 
     async def __call__(self, starlette_request: Request) -> Dict:
