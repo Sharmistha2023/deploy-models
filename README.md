@@ -10,7 +10,7 @@
       - python client/sklearn_titanic_client.py <profile-name> <deployment-name> client/test_file/test.csv
  ## Tensorflow:
     model:
-      - d3x models import tensorflow-model tensorflow tensorflow/model/
+      - d3x models import tensorflow-model12 tensorflow model/model.keras
     Deploy:
       -  Go to tensorflow folder
       - d3x serve create -n <deployment-name> -r mlflow --model <model-name> --model_version 1 --depfilepath tensorflow_mnist_serve.deploy
