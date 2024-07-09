@@ -15,7 +15,9 @@
       -  Go to tensorflow folder
       - d3x serve create -n <deployment-name> -r mlflow --model <model-name> --model_version 1 --depfilepath tensorflow_mnist_serve.deploy
     Prediction:
-      - python client/tensorflow_mnist_client.py <profile-name> <deployment-name> client/images/3.png
+      - python client/tensorflow_client.py <profile-name> <deployment-name> client/images/3.png
+                           or
+      - python client/tensorflow_mnist_client.py <service-token> <endpoint-url> client/images/3.png
  ## Xgboost:
     model:
       -  d3x models import xgboost-model xgboost xgboost/model/xgboost_titanic_model.model
@@ -23,7 +25,9 @@
       - Goto xgboost directory
       - d3x serve create -n <deployment-name> -r mlflow --model <model-name> --model_version 1 --depfilepath xgboost_titanic_serve.deploy
     Prediction:
-      - python client/xgboost_titanic_client.py <profile-name> <deployment-name> client/test_file/test.csv
+      - python client/xgboost_client.py <profile-name> <deployment-name> client/test_file/test.csv
+                                     or
+      - python client/xgboost_titanic_client.py <service token> <endpoint> client/test_file/test.csv
   ## Pytorch:
     model:
       -  d3x models import pytorch-model pytorch pytorch/model/model.pt --class_path pytorch/model/sample.py --class_instance model
