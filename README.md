@@ -2,12 +2,12 @@
 ## Import and Deploy a Model & Prediction:
   ## Sklearn:
     model:
-      - d3x mlflow models import sklearn-model sklearn sklearn/model/model.joblib
+      - d3x mlflow models import sklearn-model sklearn sklearn/model/sklearn_model.pkl
     Deploy:
       - Go to sklearn directory
       - d3x serve create -n <deployment-name> -r mlflow --model <model-name> --model_version 1 --depfilepath sklearn_titanic_serve.deploy
     Prediction:
-      - python client/sklearn_titanic_client.py <profile-name> <deployment-name> client/test_file/test.csv
+      - python client/sklearn_predict_client.py <serving token> <endpoint-url> client/test_file/testsk.csv 
  ## Tensorflow:
     model:
       - d3x mlflow models import tensorflow-model12 tensorflow tensorflow/model/model.keras
