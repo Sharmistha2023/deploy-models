@@ -2,6 +2,7 @@ import mlflow.pytorch
 from ray import serve
 import os
 import logging
+import torch
 
 from io import BytesIO
 from PIL import Image
@@ -28,28 +29,40 @@ img_h = 28
 @serve.deployment
 class ImageModel:
     def __init__(self):
+        # self.model = mlflow.pytorch.jit.load(os.environ["MODEL_PATH"])
+        # self.logger = logging.getLogger("ray.serve")
         self.model = mlflow.pytorch.load_model(os.environ["MODEL_PATH"])
         self.logger = logging.getLogger("ray.serve")
 
     async def __call__(self, starlette_request: Request) -> Dict:
-        # Get Image in bytes formats.
-        image_payload_bytes = await starlette_request.body()
-        self.logger.info("[1/2] Image payload recieved: {}".format(image_payload_bytes))
+        try:
+            # Receive raw binary data
+            image_payload_bytes = await starlette_request.body()
+            self.logger.info(f"[1/2] Image payload received: {len(image_payload_bytes)} bytes")
 
-        #TODO Need to fix prediction Error.
-        #image_payload_string = image_payload_bytes.decode("utf-8")
-        with open("image.png", "wb") as fh:
-            fh.write(base64.decodebytes(image_payload_bytes))
-        img = cv2.imread("image.png", cv2.IMREAD_GRAYSCALE)
-        img = cv2.resize(img, (28,28))
-        img = img.reshape(1,1,img.shape[0],img.shape[1])
-        img = img.astype('float32')
+            # Convert bytes to a NumPy array
+            nparr = np.frombuffer(image_payload_bytes, np.uint8)
 
-        # Perform prediction
-        #prediction = self.model.predict(x)
-        prediction = self.model(img)
-        prediction = np.argmax(prediction[0])
-        self.logger.info("[2/2] Predicted image : {}".format(prediction))
-        return {"Predicted digit:": prediction}
+            # Decode the image
+            img = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
+            if img is None:
+                raise ValueError("Failed to decode image. Ensure a valid image is sent.")
+
+            # Preprocess the image
+            img = cv2.resize(img, (28, 28))
+            img = img.reshape(1, 1, 28, 28)
+            img = img.astype("float32") / 255.0  # Normalize pixel values
+
+            # Perform prediction
+            with torch.no_grad():
+                prediction = self.model(torch.tensor(img))
+                predicted_digit = np.argmax(prediction.numpy()[0])
+
+            self.logger.info(f"[2/2] Predicted digit: {predicted_digit}")
+            return {"Predicted digit": int(predicted_digit)}
+
+        except Exception as e:
+            self.logger.error(f"Request failed: {e}")
+            return {"error": str(e)}, 500
 
 deploy = ImageModel.bind()
