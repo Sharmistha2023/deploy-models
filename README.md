@@ -43,5 +43,5 @@
       -Go to custom_model directory
       - d3x serve create -n <deployment-name> -r mlflow --model <model-name> --model_version 1 --depfilepath custom_mnist_serve.deploy
     Prediction:
-      - python client/tensorflow_mnist_client.py <profile-name> <deployment-name> client/images/3.png
+      - python client/tensorflow_mnist_client.py <serving token> <endpoint> client/images/3.png
   
